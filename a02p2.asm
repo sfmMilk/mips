@@ -278,7 +278,7 @@ befI3:
 #//                       for (hopPtr23 = hopPtr22 + 1; hopPtr23 < endPtr2; ++hopPtr23)
 #  hopPtr23 = hopPtr22 + 1;
 #  goto FTest3;
-   addi $t7, $t6, 2
+   addi $t7, $t6, 4
    j FTest3
 begF3:
 
@@ -331,31 +331,50 @@ begW3:
 #  ++hopPtr3;
 #  i2chk = *hopPtr1;
 #  found = 0;
-   
+   lw $t0, 0($t4)
+   sw $t0, 0($t7)
+   addi $t3, $t3, 1
+   addi $t8, $t0, $zero
+   li $t5, 0
 
 #//                 for (hopPtr11 = hopPtr1 + 1; hopPtr11 < endPtr1; ++hopPtr11)
-                   hopPtr11 = hopPtr1 + 1;
-                   goto FTest4;
-begF4://           {
-//                    if (*hopPtr11 == i2chk)
-                      if (*hopPtr11 != i2chk) goto else4;
-begI4://              {
-                         ++found;
-                      goto endI4;
-//                    }
-else4://              else
-//                    {
-                         *(hopPtr11 - found) = *hopPtr11;
-endI4://              }
-                   ++hopPtr11;
-//                 }
-FTest4:
-                   if (hopPtr11 < endPtr1) goto begF4;
+#  hopPtr11 = hopPtr1 + 1;
+#  goto FTest4;
+   addi $t6, $t4, 4
+   j FTest4
 
-                   used1 -= found;
-                   endPtr1 -= found;
-                   ++hopPtr1;
-//              }
+begF4:
+#//                    if (*hopPtr11 == i2chk)
+#  if (*hopPtr11 != i2chk) goto else4;
+    lw $t0, 0($t6)
+    bne $t0, $t8, else4
+begI4:
+#  ++found;
+#  goto endI4;
+   addi $t5, $t5, 1
+   j endI4
+else4:
+#  *(hopPtr11 - found) = *hopPtr11;
+   lw $t0, 0($t6)
+   sll $t9, $t5, 2
+   sub $t9, $t6, $t9
+   sw $t0, 0($t9)
+endI4:
+#  ++hopPtr11;
+   addi $t6, $t6, 4
+FTest4:
+#  if (hopPtr11 < endPtr1) goto begF4;
+   slt $t0, $t6, $a1
+   bne $t0, $zero, begF4
+
+#  used1 -= found;
+#  endPtr1 -= found;
+#  ++hopPtr1;
+   sub $t1, $t1, $t5
+   sll $t0, $t5, 2
+   sub $a1, $a1, $t0
+   addi $t4, $t4, 4
+
 WTest3:
                 if (hopPtr1 < endPtr1) goto begW3;
 
