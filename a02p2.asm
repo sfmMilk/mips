@@ -482,9 +482,9 @@ FTest6:
    la $a0, comA3Str
    syscall
 
-   la $t6, a3
+   la $t7, a3
    sll $t0, $t3, 2
-   add $t0, $t6, $t0
+   add $t0, $t7, $t0
    addi $a3, $t0, $zero
 
 #//              while (hopPtr3 < endPtr3)
@@ -492,38 +492,102 @@ FTest6:
    j WTest4
 begW4:
 #//                 if (hopPtr3 == endPtr3 - 1)
-                   if (hopPtr3 != endPtr3 - 1) goto else7;
-begI7://           {
-                      cout << *hopPtr3 << endl;
-                   goto endI7;
-//                 }
-else7://           else
-//                 {
-                      cout << *hopPtr3 << ' ';
-endI7://           }
-                   ++hopPtr3;
-//              }
+#  if (hopPtr3 != endPtr3 - 1) goto else7;
+   addi $t0, $a3, -4
+   bne $t7, $t0, else7
+begI7:
+#  cout << *hopPtr3 << endl;
+#  goto endI7;
+   li $v0, 1
+   lw $a0, 0($t7)
+   syscall
+
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+   j endI7
+
+else7:
+#  cout << *hopPtr3 << ' ';
+   li $v0, 1
+   lw $a0, 0($t7)
+   syscall
+
+   li $v0, 11
+   li $a0, ' '
+   syscall
+endI7:
+#  ++hopPtr3;
+   addi $t7, $t7, 4
+
 WTest4:
-                if (hopPtr3 < endPtr3) goto begW4;
+#  if (hopPtr3 < endPtr3) goto begW4;
+   slt $t0, $t7, $a3
+   bne $t0, $zero, begW4
 
-                cout << endl;
-                cout << dacStr;
-                cin >> yesNo;
-                cout << endl;
-//           }
+#  cout << endl;
+#  cout << dacStr;
+#  cin >> yesNo;
+#  cout << endl;
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+   li $v0, 4
+   la $a0, dacStr
+   syscall
+
+   li $v0, 12
+   syscall
+   add $t8, $v0, $zero
+
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
 DWTest1:
-//           while (yesNo != 'n' && yesNo != 'N');
-////         if (yesNo != 'n' && yesNo != 'N') goto begDW1;
-             if (yesNo == 'n') goto xitDW1;
-             if (yesNo != 'N') goto begDW1;
+#//           while (yesNo != 'n' && yesNo != 'N');
+#////         if (yesNo != 'n' && yesNo != 'N') goto begDW1;
+#  if (yesNo == 'n') goto xitDW1;
+#  if (yesNo != 'N') goto begDW1;
+   li $t0, 'n'
+   beq $t8, $t0, xitDW1
+   li $t0, 'N'
+   bne $t8, $t0, begDW1
+
 xitDW1:
+#  cout << dlStr;
+#  cout << '\n';
+#  cout << byeStr;
+#  cout << '\n';
+#  cout << dlStr;
+#  cout << '\n';
+   li $v0, 4
+   la $a0, dlStr
+   syscall
 
-             cout << dlStr;
-             cout << '\n';
-             cout << byeStr;
-             cout << '\n';
-             cout << dlStr;
-             cout << '\n';
+   li $v0, 11
+   li $a0, '\n'
+   syscall
 
-             return 0;
+   li $v0, 4
+   la $a0, byeStr
+   syscall
+
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+   li $v0, 4
+   la $a0, dlStr
+   syscall
+
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+#  return 0;
+   li $v0, 10
+   syscall
 }
