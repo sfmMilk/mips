@@ -376,18 +376,39 @@ FTest4:
    addi $t4, $t4, 4
 
 WTest3:
-                if (hopPtr1 < endPtr1) goto begW3;
+#  if (hopPtr1 < endPtr1) goto begW3;
+   slt $t0, $t4, $a1
+   bne $t0, $zero, begW3
 
-                cout << proA1Str;
-//              for (hopPtr1 = a1; hopPtr1 < endPtr1; ++hopPtr1)
-                hopPtr1 = a1;
-                goto FTest5;
-begF5://         {
-//                 if (hopPtr1 == endPtr1 - 1)
-                   if (hopPtr1 != endPtr1 - 1) goto else5;
-begI5://           {
-                      cout << *hopPtr1 << endl;
-                   goto endI5;
+#  cout << proA1Str;
+   li $v0, 4
+   la $a0, proA1Str
+   syscall
+
+#//              for (hopPtr1 = a1; hopPtr1 < endPtr1; ++hopPtr1)
+#  hopPtr1 = a1;
+#  goto FTest5;
+   la $t4, a1
+   j FTest5
+
+begF5:
+#//                 if (hopPtr1 == endPtr1 - 1)
+#  if (hopPtr1 != endPtr1 - 1) goto else5;
+   addi $t0, $a1, -4
+   bne $t4, $t0, else5
+begI5:
+#  cout << *hopPtr1 << endl;
+#  goto endI5;
+   li $v0, 1
+   lw $a0, 0($t4)
+   syscall
+   
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+   j endI5
+
 //                 }
 else5://           else
 //                 {
