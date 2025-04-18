@@ -234,19 +234,28 @@ WTest1:
    la $t5, a2
    li $t2, $zero
    j FTest1
-begF1://        {
-                   *hopPtr2 = *hopPtr1;
-                ++hopPtr1;
-                ++hopPtr2;
-                ++used2;         // multiple updates
-//              }
-FTest1:
-                if (hopPtr1 < endPtr1) goto begF1;                     // loop test
+begF1:
 
-                hopPtr2 = a2;
-                endPtr2 = a2 + used2;
-//              while (hopPtr2 < endPtr2)
-                goto WTest2;
+#  *hopPtr2 = *hopPtr1;
+#  ++hopPtr1;
+#  ++hopPtr2;
+#  ++used2;         // multiple updates
+   lw $t0, 0($t4)
+   sw $t0, 0($t5)
+   addi $t4, $t4, 4
+   addi $t5, $t5, 4
+   addi $t2, $t2, 1
+
+
+FTest1:
+# if (hopPtr1 < endPtr1) goto begF1;                     // loop test
+   slt $t0, $t4, $a1
+   bne $t0, $zero, begF1
+# hopPtr2 = a2;
+# endPtr2 = a2 + used2;
+
+#//              while (hopPtr2 < endPtr2)
+# goto WTest2;
 begW2://        {
                    i2chk = *hopPtr2;
 //                 for (hopPtr22 = hopPtr2 + 1; hopPtr22 < endPtr2; ++hopPtr22)
