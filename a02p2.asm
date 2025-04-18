@@ -4,7 +4,7 @@
 #int  a1[12],
 #    a2[12],
 #    a3[12];
-		.data
+		   .data
 a1:		.space 48
 a2:		.space 48
 a3:		.space
@@ -281,12 +281,13 @@ befI3:
    addi $t7, $t6, 2
    j FTest3
 begF3:
+
 #  *(hopPtr23 - 1) = *hopPtr23;
 #  ++hopPtr23;
-addi $t9, $t7, -4
-lw $t0, 0($t7)
-sw $t0, 0($t9)
-addi $t7, $t7, 4
+   addi $t9, $t7, -4
+   lw $t0, 0($t7)
+   sw $t0, 0($t9)
+   addi $t7, $t7, 4
 
 FTest3:
 #  if (hopPtr23 < endPtr2) goto begF3;
@@ -299,29 +300,40 @@ FTest3:
    addi $t2, $t2, -1
    addi $t5, $t5, -4
    addi $t6, $t6, -4
-endI3://              }
-                   ++hopPtr22;
-//                 }
+endI3:
+#  ++hopPtr22;
+   addi $t6, $t6, 4
 FTest2:
-                   if (hopPtr22 < endPtr2) goto begF2;
+#  if (hopPtr22 < endPtr2) goto begF2;
+   slt $t0, $t6, $t5
+   bne $t0, $zer0, begF2
 
-                   ++hopPtr2;
+#   ++hopPtr2;
+   addi $t5, $t5, 4
 //              }
 WTest2:
-                if (hopPtr2 < endPtr2) goto begW2;
+#  if (hopPtr2 < endPtr2) goto begW2;
+   slt $t0, $t5, $a2
+   bne $t0, $zero, begW2
 
-                used3 = 0;
-                hopPtr3 = a3;
-                hopPtr1 = a1;
-//              while (hopPtr1 < endPtr1)
-                goto WTest3;
-begW3://        {
-                   *hopPtr3 = *hopPtr1;
-                   ++used3;
-                   ++hopPtr3;
-                   i2chk = *hopPtr1;
-                   found = 0;
-//                 for (hopPtr11 = hopPtr1 + 1; hopPtr11 < endPtr1; ++hopPtr11)
+#  used3 = 0;
+#  hopPtr3 = a3;
+#  hopPtr1 = a1;
+   li $t3, 0
+   la $t7, a3
+   la $t4, a1
+#//              while (hopPtr1 < endPtr1)
+#  goto WTest3;
+   j WTest3
+begW3:
+#  *hopPtr3 = *hopPtr1;
+#  ++used3;
+#  ++hopPtr3;
+#  i2chk = *hopPtr1;
+#  found = 0;
+   
+
+#//                 for (hopPtr11 = hopPtr1 + 1; hopPtr11 < endPtr1; ++hopPtr11)
                    hopPtr11 = hopPtr1 + 1;
                    goto FTest4;
 begF4://           {
