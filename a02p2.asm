@@ -402,50 +402,96 @@ begI5:
    li $v0, 1
    lw $a0, 0($t4)
    syscall
-   
+
    li $v0, 11
    li $a0, '\n'
    syscall
 
    j endI5
 
-//                 }
-else5://           else
-//                 {
-                      cout << *hopPtr1 << ' ';
-endI5://           }
-                ++hopPtr1;
-//              }
+else5:
+#  cout << *hopPtr1 << ' ';
+   li $v0, 1
+   lw $a0, 0($t4)
+   syscall
+
+   li $v0, 11
+   li $a0, ' '
+   syscall
+endI5:
+#  ++hopPtr1;
+   addi $t4, $t4, 4
+
 FTest5:
-                if (hopPtr1 < endPtr1) goto begF5;
+#  if (hopPtr1 < endPtr1) goto begF5;
+   slt $t0, $t4, $a1
+   bne $t0, $zero, begF5
 
-                cout << comA2Str;
-//              for (hopPtr2 = a2; hopPtr2 < endPtr2; ++hopPtr2)
-                hopPtr2 = a2;
-                goto FTest6;
-begF6://        {
-//                 if (hopPtr2 == endPtr2 - 1)
-                   if (hopPtr2 != endPtr2 - 1) goto else6;
-begI6://           {
-                      cout << *hopPtr2 << endl;
-                   goto endI6;
-//                 }
-else6://           else
-//                 {
-                      cout << *hopPtr2 << ' ';
-endI6://           }
-                ++hopPtr2;
-//              }
+#  cout << comA2Str;
+   li $v0, 4
+   la $a0, comA2Str
+   syscall
+
+#//              for (hopPtr2 = a2; hopPtr2 < endPtr2; ++hopPtr2)
+#  hopPtr2 = a2;
+#  goto FTest6;
+   la $t5, a2
+   j FTest6
+begF6:
+#//                 if (hopPtr2 == endPtr2 - 1)
+#  if (hopPtr2 != endPtr2 - 1) goto else6;
+   addi $t0, $a2, -4
+   bne $t5, $t0, else6
+begI6:
+#  cout << *hopPtr2 << endl;
+#  goto endI6;
+
+   li $v0, 1
+   lw $a0, 0($t5)
+   syscall
+
+   li $v0, 11
+   li $a0, '\n'
+   syscall
+
+   j endI6
+
+else6:
+#  cout << *hopPtr2 << ' ';
+   li $v0, 1
+   lw $a0, 0($t5)
+   syscall
+
+   li $v0, 11
+   li $a0, ' '
+   syscall
+
+endI6:
+#  ++hopPtr2;
+   addi $t5, $t5, 4
+
 FTest6:
-                if (hopPtr2 < endPtr2) goto begF6;
+#  if (hopPtr2 < endPtr2) goto begF6;
+   slt $t0, $t5, $a2
+   bne $t0, $zero, begF6
 
-                cout << comA3Str;
-                hopPtr3 = a3;
-                endPtr3 = a3 + used3;
-//              while (hopPtr3 < endPtr3)
-                goto WTest4;
-begW4://        {
-//                 if (hopPtr3 == endPtr3 - 1)
+#  cout << comA3Str;
+#  hopPtr3 = a3;
+#  endPtr3 = a3 + used3;
+   li $v0, 4
+   la $a0, comA3Str
+   syscall
+
+   la $t6, a3
+   sll $t0, $t3, 2
+   add $t0, $t6, $t0
+   addi $a3, $t0, $zero
+
+#//              while (hopPtr3 < endPtr3)
+#  goto WTest4;
+   j WTest4
+begW4:
+#//                 if (hopPtr3 == endPtr3 - 1)
                    if (hopPtr3 != endPtr3 - 1) goto else7;
 begI7://           {
                       cout << *hopPtr3 << endl;
