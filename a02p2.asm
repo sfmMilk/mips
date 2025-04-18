@@ -43,11 +43,13 @@ proA1Str:		.asciiz "processed a1: "
 comA2Str:		.asciiz "********* a2: "
 comA3Str:		.asciiz "********* a3: "
 einStr:			.asciiz "Enter integer #"
+moStr:         .asciiz "Max of "
 ieStr:			.asciiz " ints entered..."
 emiStr:			.asciiz "Enter more ints? (n or N = no, others = yes) "
 dacStr:			.asciiz "Do another case? (n or N = no, others = yes) "
 dlStr:			.asciiz "================================"
 byeStr:			.asciiz "bye..."
+testMSG:       .asciiz "Hi I am running."
 
 ################################################
 # Register usage:
@@ -70,6 +72,7 @@ byeStr:			.asciiz "bye..."
 
 #int main()
 			.globl main
+         .text
 main:
 
 begDW1:
@@ -126,7 +129,7 @@ begI1:
 	syscall
 	
 	li $v0, 1
-	la $a0, 12
+	li $a0, 12
 	syscall
 	
 	li $v0, 4
@@ -134,7 +137,7 @@ begI1:
 	syscall
 	
 	li $v0, 4
-	li $a0, "\n"
+	li $a0, '\n'
 	syscall
 	
 	li $t8, 'n'
@@ -221,7 +224,7 @@ endI2:
 WTest1:
 #  if (hopPtr1 < endPtr1) goto begW1;
 	slt $t0, $t4, $a1
-	bne $t0, $zero begW1
+	bne $t0, $zero, begW1
 
 #//              for (hopPtr1 = a1, hopPtr2 = a2, used2 = 0; // multiple initializations
 #//                   hopPtr1 < endPtr1;                     // loop test
@@ -232,7 +235,7 @@ WTest1:
 #  goto FTest1;
    la $t4, a1
    la $t5, a2
-   li $t2, $zero
+   li $t2, 0
    j FTest1
 begF1:
 
@@ -253,9 +256,9 @@ FTest1:
    bne $t0, $zero, begF1
 #  hopPtr2 = a2;
 #  endPtr2 = a2 + used2;
-   la $t5, a2
+   la $t9, a2
    sll $t0, $t2, 2
-   add $a2, $t0, $t0
+   add $a2, $t9, $t0
 
 #//              while (hopPtr2 < endPtr2)
 # goto WTest2;
@@ -305,8 +308,8 @@ endI3:
    addi $t6, $t6, 4
 FTest2:
 #  if (hopPtr22 < endPtr2) goto begF2;
-   slt $t0, $t6, $t5
-   bne $t0, $zer0, begF2
+   slt $t0, $t6, $a2
+   bne $t0, $zero, begF2
 
 #   ++hopPtr2;
    addi $t5, $t5, 4
@@ -333,7 +336,7 @@ begW3:
    lw $t0, 0($t4)
    sw $t0, 0($t7)
    addi $t3, $t3, 1
-   addi $t8, $t0, $zero
+   add $t8, $t0, $zero
    li $t5, 0
 
 #//                 for (hopPtr11 = hopPtr1 + 1; hopPtr11 < endPtr1; ++hopPtr11)
@@ -482,9 +485,6 @@ FTest6:
    syscall
 
    la $t7, a3
-   sll $t0, $t3, 2
-   add $t0, $t7, $t0
-   addi $a3, $t0, $zero
 
 #//              while (hopPtr3 < endPtr3)
 #  goto WTest4;
