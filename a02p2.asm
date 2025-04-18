@@ -71,8 +71,7 @@ byeStr:			.asciiz "bye..."
 #int main()
 			.globl main
 main:
-#{
-#//           do
+
 begDW1:
 	#used1 = 0;
 	#hopPtr1 = a1;
@@ -80,12 +79,12 @@ begDW1:
 	la $t4, a1
 #//              do
 begDW2:
-#       cout << einStr;
-#       cout << (used1 + 1);
-#       cout << ':' << ' ';
-#       cin >> *hopPtr1;
-#       ++used1;
-#       ++hopPtr1;
+#  cout << einStr;
+#  cout << (used1 + 1);
+#  cout << ':' << ' ';
+#  cin >> *hopPtr1;
+#  ++used1;
+#  ++hopPtr1;
 
 	li $v0, 4
 	la $a0, einStr
@@ -112,7 +111,7 @@ begDW2:
 	
 	
 	
-#       if (used1 != 12) goto else1;
+#  if (used1 != 12) goto else1;
 	li $t0, 12
 	bne $t1, $t0, else1
 begI1:
@@ -144,8 +143,8 @@ begI1:
 	j endI1
 
 else1:
-#       cout << emiStr;
-#       cin >> yesNo;
+#  cout << emiStr;
+#  cin >> yesNo;
 	li $v0, 4
 	la $a0, emiStr
 	syscall
@@ -159,17 +158,17 @@ endI1:
 DWTest2:
 #//     while (yesNo != 'n' && yesNo != 'N');
 
-#       if (yesNo == 'n') goto xitDW2;
-#       if (yesNo != 'N')goto begDW2;
+#  if (yesNo == 'n') goto xitDW2;
+#  if (yesNo != 'N')goto begDW2;
 	li $t0, 'n'
 	beq  $t8, $t0, xitDW2
 	li $t0, 'N'
 	bne $t8, $t0, begDW2
 
 xitDW2:
-#               cout << begA1Str;
-#               hopPtr1 = a1;
-#               endPtr1 = a1 + used1;
+#  cout << begA1Str;
+#  hopPtr1 = a1;
+#  endPtr1 = a1 + used1;
 	
 	li $v0, 4
 	la $a0, begA1Str
@@ -183,18 +182,18 @@ xitDW2:
 	
 #//     while (hopPtr1 < endPtr1)
 
-#       goto WTest1;
+#  goto WTest1;
 	j WTest1
 	
 begW1:
-#       if (hopPtr1 != endPtr1 - 1) goto else2;
+#  if (hopPtr1 != endPtr1 - 1) goto else2;
 	
 	addi $t0, $a1, -4
 	bne $t4, $t0, else2
 	
 begI2:
-#       cout << *hopPtr1 << endl;
-#       goto endI2;
+#  cout << *hopPtr1 << endl;
+#  goto endI2;
 	
 	li $v0, 1
 	lw $a0, 0($t4)
@@ -217,20 +216,24 @@ else2:
 	syscall
 	
 endI2:
-#       ++hopPtr1;
+#  ++hopPtr1;
 	addi $t4, $t4, 4
 WTest1:
-#       if (hopPtr1 < endPtr1) goto begW1;
+#  if (hopPtr1 < endPtr1) goto begW1;
 	slt $t0, $t4, $a1
-	b
+	bne $t0, $zero begW1
 
-//              for (hopPtr1 = a1, hopPtr2 = a2, used2 = 0; // multiple initializations
-//                   hopPtr1 < endPtr1;                     // loop test
-//                   ++hopPtr1, ++hopPtr2, ++used2)         // multiple updates
-                hopPtr1 = a1;
-                hopPtr2 = a2;
-                used2 = 0; // multiple initializations
-                goto FTest1;
+#//              for (hopPtr1 = a1, hopPtr2 = a2, used2 = 0; // multiple initializations
+#//                   hopPtr1 < endPtr1;                     // loop test
+#//                   ++hopPtr1, ++hopPtr2, ++used2)         // multiple updates
+#  hopPtr1 = a1;
+#  hopPtr2 = a2;
+#  used2 = 0; // multiple initializations
+#  goto FTest1;
+   la $t4, a1
+   la $t5, a2
+   li $t2, $zero
+   j FTest1
 begF1://        {
                    *hopPtr2 = *hopPtr1;
                 ++hopPtr1;
