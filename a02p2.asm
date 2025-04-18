@@ -7,7 +7,7 @@
 		   .data
 a1:		.space 48
 a2:		.space 48
-a3:		.space
+a3:		.space 48
 
 
 #int  found,
@@ -310,7 +310,6 @@ FTest2:
 
 #   ++hopPtr2;
    addi $t5, $t5, 4
-//              }
 WTest2:
 #  if (hopPtr2 < endPtr2) goto begW2;
    slt $t0, $t5, $a2
@@ -590,4 +589,3 @@ xitDW1:
 #  return 0;
    li $v0, 10
    syscall
-}
