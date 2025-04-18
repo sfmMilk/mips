@@ -248,36 +248,57 @@ begF1:
 
 
 FTest1:
-# if (hopPtr1 < endPtr1) goto begF1;                     // loop test
+#  if (hopPtr1 < endPtr1) goto begF1;                     // loop test
    slt $t0, $t4, $a1
    bne $t0, $zero, begF1
-# hopPtr2 = a2;
-# endPtr2 = a2 + used2;
+#  hopPtr2 = a2;
+#  endPtr2 = a2 + used2;
+   la $t5, a2
+   sll $t0, $t2, 2
+   add $a2, $t0, $t0
 
 #//              while (hopPtr2 < endPtr2)
 # goto WTest2;
-begW2://        {
-                   i2chk = *hopPtr2;
-//                 for (hopPtr22 = hopPtr2 + 1; hopPtr22 < endPtr2; ++hopPtr22)
-                   hopPtr22 = hopPtr2 + 1; 
-                   goto FTest2;
-begF2://           {
-//                    if (*hopPtr22 == i2chk)
-                      if (*hopPtr22 != i2chk) goto endI3;
-befI3://              {
-//                       for (hopPtr23 = hopPtr22 + 1; hopPtr23 < endPtr2; ++hopPtr23)
-                         hopPtr23 = hopPtr22 + 1;
-                         goto FTest3;
-begF3://                 {
-                            *(hopPtr23 - 1) = *hopPtr23;
-                         ++hopPtr23;
-//                       }
-FTest3:
-                         if (hopPtr23 < endPtr2) goto begF3;
+j WTest2
 
-                         --used2;
-                         --endPtr2;
-                         --hopPtr22;
+begW2:
+#  i2chk = *hopPtr2;
+   lw $t8, 0($t5)
+#  //                 for (hopPtr22 = hopPtr2 + 1; hopPtr22 < endPtr2; ++hopPtr22)
+#  hopPtr22 = hopPtr2 + 1; 
+#  goto FTest2;
+   addi $t6, $t5, 4
+   j FTest2
+begF2:
+#//                    if (*hopPtr22 == i2chk)
+#  if (*hopPtr22 != i2chk) goto endI3;
+   lw $t0, 0($t6)
+   bne $t0, $t8, endI3
+befI3:
+#//                       for (hopPtr23 = hopPtr22 + 1; hopPtr23 < endPtr2; ++hopPtr23)
+#  hopPtr23 = hopPtr22 + 1;
+#  goto FTest3;
+   addi $t7, $t6, 2
+   j FTest3
+begF3:
+#  *(hopPtr23 - 1) = *hopPtr23;
+#  ++hopPtr23;
+addi $t9, $t7, -4
+lw $t0, 0($t7)
+sw $t0, 0($t9)
+addi $t7, $t7, 4
+
+FTest3:
+#  if (hopPtr23 < endPtr2) goto begF3;
+   slt $t0, $t7, $a2
+   bne $t0, $zero, begF3
+
+#  --used2;
+#  --endPtr2;
+#  --hopPtr22;
+   addi $t2, $t2, -1
+   addi $t5, $t5, -4
+   addi $t6, $t6, -4
 endI3://              }
                    ++hopPtr22;
 //                 }
