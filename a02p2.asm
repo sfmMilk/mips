@@ -93,9 +93,8 @@ begDW2:
 	la $a0, einStr
 	syscall
 	
-	add $t0, $t1, 1
 	li $v0, 1
-	add $a0, $t0, $zero
+	addi $a0, $t1, 1
 	syscall
 	
 	li $v0, 11
@@ -256,13 +255,13 @@ FTest1:
    bne $t0, $zero, begF1
 #  hopPtr2 = a2;
 #  endPtr2 = a2 + used2;
-   la $t9, a2
+   la $t5, a2
    sll $t0, $t2, 2
-   add $a2, $t9, $t0
+   add $a2, $t5, $t0
 
 #//              while (hopPtr2 < endPtr2)
 # goto WTest2;
-j WTest2
+   j WTest2
 
 begW2:
 #  i2chk = *hopPtr2;
@@ -301,12 +300,13 @@ FTest3:
 #  --endPtr2;
 #  --hopPtr22;
    addi $t2, $t2, -1
-   addi $t5, $t5, -4
+   addi $a2, $a2, -4
    addi $t6, $t6, -4
 endI3:
 #  ++hopPtr22;
    addi $t6, $t6, 4
 FTest2:
+   
 #  if (hopPtr22 < endPtr2) goto begF2;
    slt $t0, $t6, $a2
    bne $t0, $zero, begF2
@@ -336,6 +336,7 @@ begW3:
    lw $t0, 0($t4)
    sw $t0, 0($t7)
    addi $t3, $t3, 1
+   addi $t7, $t7, 4
    add $t8, $t0, $zero
    li $t5, 0
 
@@ -485,18 +486,21 @@ FTest6:
    syscall
 
    la $t7, a3
-
+   sll $t0, $t3, 2
+   add $a3, $t7, $t0
 #//              while (hopPtr3 < endPtr3)
 #  goto WTest4;
    j WTest4
 begW4:
 #//                 if (hopPtr3 == endPtr3 - 1)
 #  if (hopPtr3 != endPtr3 - 1) goto else7;
+
    addi $t0, $a3, -4
    bne $t7, $t0, else7
 begI7:
+
 #  cout << *hopPtr3 << endl;
-#  goto endI7;
+#  goto endI7;5
    li $v0, 1
    lw $a0, 0($t7)
    syscall
@@ -516,6 +520,7 @@ else7:
    li $v0, 11
    li $a0, ' '
    syscall
+
 endI7:
 #  ++hopPtr3;
    addi $t7, $t7, 4
