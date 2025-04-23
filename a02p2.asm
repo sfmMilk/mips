@@ -135,7 +135,7 @@ begI1:
 	la $a0, ieStr
 	syscall
 	
-	li $v0, 4
+	li $v0, 11
 	li $a0, '\n'
 	syscall
 	
